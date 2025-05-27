@@ -1,14 +1,17 @@
 package appli.vue;
 
 import appli.controleur.Controleur;
+import appli.modele.Scenario;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 
+import java.util.ArrayList;
+
 public class MenuDeroulant extends MenuBar {
+    private static ArrayList<Scenario> chScenarios;
 
     public static MenuBar createMenuBar() {
-
         MenuBar menuBar = new MenuBar();
 
 
@@ -17,23 +20,11 @@ public class MenuDeroulant extends MenuBar {
 
 
 
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 0; i <= 8; i++) {
             MenuItem scenario = new MenuItem("Scénario " + i);
+            scenario.setUserData("s"+i);
 
-            scenario.setOnAction(new Controleur()); {
-                try {
-
-                    scenario.setOnAction(VBoxRoot.getControleur());
-                    System.out.println("Ajouter un scenario");
-
-
-
-
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
+            scenario.setOnAction(VBoxRoot.getControleur());
 
             menuFichiers.getItems().add(scenario);
 

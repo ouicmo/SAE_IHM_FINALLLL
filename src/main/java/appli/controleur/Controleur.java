@@ -11,8 +11,13 @@ public class Controleur implements EventHandler {
     public void handle(Event event) {
         if (event.getSource() instanceof MenuItem) {
             MenuItem item = (MenuItem) event.getSource();
-            Scenario scenario = (Scenario) item.getUserData();
-            System.out.println(scenario);
+            Scenario scenario = null;
+            try {
+                scenario = new Scenario((String) item.getUserData());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(scenario.getTransactions());
 
         }
     }

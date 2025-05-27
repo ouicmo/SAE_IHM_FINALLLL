@@ -12,7 +12,7 @@ public class Ville {
 
     public Ville(String parNom) throws Exception {
         chNom = parNom;
-        File distance = new File("src/appli.Données/distances.txt");
+        File distance = new File("data/distances.txt");
         Scanner scan = new Scanner(distance);
 
         Map<String, ArrayList<Integer>> DistanceVille = new LinkedHashMap<>();

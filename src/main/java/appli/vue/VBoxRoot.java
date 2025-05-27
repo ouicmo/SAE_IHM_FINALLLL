@@ -1,6 +1,7 @@
 package appli.vue;
 
 import appli.controleur.Controleur;
+import appli.modele.Scenario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -10,10 +11,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import appli.modele.Personne;
 
+import java.util.ArrayList;
+
 public class VBoxRoot extends VBox {
 
     private static Controleur chControleur;
     private TableauPane tableauPane;
+    private MenuDeroulant chMenuDeroulant;
+    private ArrayList<Scenario> chScenarios;
 
 
     private final ObservableList<Personne> donnees = FXCollections.observableArrayList();
@@ -21,6 +26,8 @@ public class VBoxRoot extends VBox {
     public VBoxRoot() {
         super(30);
         chControleur = new Controleur();
+        chMenuDeroulant = new MenuDeroulant();
+        chScenarios = new ArrayList<>();
 
         Label labelTitle = new Label("Tableau des Transactions");
         VBox.setMargin(labelTitle, new Insets(14));

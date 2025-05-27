@@ -12,7 +12,7 @@ public class Membre {
     public Membre(String parNomMembre) throws Exception {
         chNomMembre = parNomMembre;
         /*Lecture des distances du fichier distances.txt permettant d'obtenir un dictionnaire memberdic tel que (Membre,Ville)*/
-        File memberliste = new File("src/appli.Données/membres_APPLI.txt");
+        File memberliste = new File("data/membres_APPLI.txt");
         Scanner scan2 = new Scanner(memberliste);
         Map<String, String> memberdic = new LinkedHashMap<>();
         while (scan2.hasNextLine()) {

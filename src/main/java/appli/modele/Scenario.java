@@ -15,7 +15,7 @@ public class Scenario {
             scenarios.put("s"+i,"scenario_"+i);
         }
         chScenarioChoisi = parScenario;
-        File scenarioFile = new File("src/appli.Données/"+scenarios.get(chScenarioChoisi)+".txt");
+        File scenarioFile = new File("data/"+scenarios.get(chScenarioChoisi)+".txt");
         Scanner scan3 = new Scanner(scenarioFile);
 
         chTransactions = new LinkedHashMap<>();
