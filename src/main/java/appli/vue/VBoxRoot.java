@@ -30,7 +30,7 @@ public class VBoxRoot extends VBox {
         chScenarios = new ArrayList<>();
 
         Label labelTitle = new Label("Tableau des Transactions");
-        VBox.setMargin(labelTitle, new Insets(14));
+        VBox.setMargin(labelTitle, new Insets(10));
 
         MenuBar menuBar = MenuDeroulant.createMenuBar();
 
@@ -48,28 +48,8 @@ public class VBoxRoot extends VBox {
         table.getColumns().addAll(colAcheteur, colVendeur);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        //Champs dee saisie
-        TextField acheteurField = new TextField();
-        acheteurField.setPromptText("Acheteur");
 
-        TextField vendeurField = new TextField();
-        vendeurField.setPromptText("Vendeur");
-
-        //Buton Ajouter
-        Button btnAjouter = new Button("Ajouter");
-        btnAjouter.setOnAction(e -> {
-            String acheteur = acheteurField.getText().trim();
-            String vendeur = vendeurField.getText().trim();
-
-            if (!acheteur.isEmpty() && !vendeur.isEmpty()) {
-                donnees.add(new Personne(acheteur, vendeur));
-                acheteurField.clear();
-                vendeurField.clear();
-            }
-        });
-
-
-        HBox formBox = new HBox(10, acheteurField, vendeurField, btnAjouter);
+        HBox formBox = new HBox(10);
         formBox.setPadding(new Insets(10));
 
         TableauPane tabbb = new TableauPane();

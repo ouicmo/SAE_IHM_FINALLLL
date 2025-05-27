@@ -17,7 +17,7 @@ public class Controleur implements EventHandler {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(scenario.getTransactions());
+            System.out.println(item.getUserData() +" : "+ scenario.getTransactions());
 
         }
     }

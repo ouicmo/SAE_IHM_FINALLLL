@@ -32,25 +32,6 @@ public class TableauPane extends GridPane {
         table.getColumns().addAll(colAcheteur, colVendeur);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        //Champs dee saisie
-        TextField acheteurField = new TextField();
-        acheteurField.setPromptText("Acheteur");
-
-        TextField vendeurField = new TextField();
-        vendeurField.setPromptText("Vendeur");
-
-        //Buton Ajouter
-        Button btnAjouter = new Button("Ajouter");
-        btnAjouter.setOnAction(e -> {
-            String acheteur = acheteurField.getText().trim();
-            String vendeur = vendeurField.getText().trim();
-
-            if (!acheteur.isEmpty() && !vendeur.isEmpty()) {
-                donnees.add(new Personne(acheteur, vendeur));
-                acheteurField.clear();
-                vendeurField.clear();
-            }
-        });
     }
 
     public void add(Scenario parScenario) {
