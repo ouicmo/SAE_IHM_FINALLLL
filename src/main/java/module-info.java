@@ -5,4 +5,5 @@ module appli {
     requires org.controlsfx.controls;
 
     exports appli.vue;
+    exports appli.modele;
 }

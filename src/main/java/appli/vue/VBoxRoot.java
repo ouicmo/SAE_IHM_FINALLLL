@@ -26,16 +26,12 @@ public class VBoxRoot extends VBox {
         chTableauPane = new TableauPane();
 
         Label labelTitle = new Label("Tableau des Transactions");
-        VBox.setMargin(labelTitle, new Insets(10));
-
 
         HBox formBox = new HBox(10);
         formBox.setPadding(new Insets(10));
 
 
-
         this.getChildren().addAll(chMenuDeroulant, labelTitle, chTableauPane, formBox);
-
 
 
     }
@@ -52,7 +48,4 @@ public class VBoxRoot extends VBox {
         return chTableauPane;
     }
 
-    /*public TableauPane ajoutTableauPane(Scenario parScenario) {
-        tableauPane.add(parScenario);
-    }*/
 }
