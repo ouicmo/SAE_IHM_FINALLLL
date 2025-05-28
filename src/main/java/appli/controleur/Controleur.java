@@ -1,6 +1,8 @@
 package appli.controleur;
 
+import appli.modele.GrapheOriente;
 import appli.modele.Scenario;
+import appli.vue.VBoxRoot;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
@@ -17,7 +19,13 @@ public class Controleur implements EventHandler {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(item.getUserData() +" : "+ scenario.getTransactions());
+            //VBoxRoot.getTableauPane()
+            try {
+                GrapheOriente grapheduscen = new GrapheOriente(scenario);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
 
         }
     }

@@ -1,40 +1,39 @@
 package appli.vue;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import appli.modele.GrapheOriente;
+import appli.modele.Membre;
+import appli.modele.Scenario;
+import appli.modele.Ville;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import appli.modele.Personne;
-import appli.modele.Scenario;
 
-public class TableauPane extends GridPane {
+import java.util.ArrayList;
+import java.util.Map;
 
-    private final ObservableList<Personne> donnees = FXCollections.observableArrayList();
+public class TableauPane extends TableView<String> {
+    private ArrayList<Membre> listeMembre;
 
     public TableauPane() {
-        Label labelTitle = new Label("Tableau des echanges");
+        TableColumn<Membre,Membre> colTrans = new TableColumn<>("Transactions");
+        colTrans.setCellValueFactory(new PropertyValueFactory<>("transactions"));
 
-        VBox.setMargin(labelTitle, new Insets(14));
+        TableColumn<Ville,String> colVilles = new TableColumn<>("Villes des transactions");
+        colVilles.setCellValueFactory(new PropertyValueFactory<>("villes"));
 
-        TableView<Personne> table = new TableView<>();
-        table.setItems(donnees);
-
-
-        TableColumn<Personne, String> colAcheteur = new TableColumn<>("Acheteur");
-        colAcheteur.setCellValueFactory(new PropertyValueFactory<>("acheteur"));
-
-        TableColumn<Personne, String> colVendeur = new TableColumn<>("Vendeur");
-        colVendeur.setCellValueFactory(new PropertyValueFactory<>("vendeur"));
-
-        table.getColumns().addAll(colAcheteur, colVendeur);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        this.getColumns().addAll(colTrans, colVilles);
+        this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
     }
 
-    public void add(Scenario parScenario) {
-
+    public void setTableauPane(GrapheOriente parGrapheOriente) {
+        VBoxRoot.getTableauPane().getItems().clear();
+        Scenario scenariochoisi = parGrapheOriente.getChScenario();
+        Map<Membre, Membre> transactionsduscen = scenariochoisi.getTransactions();
+        for (Membre membre : transactionsduscen.values()) {
+            //this.getItems().add(membre);
+        }
     }
 }

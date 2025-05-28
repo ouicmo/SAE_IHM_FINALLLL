@@ -11,18 +11,12 @@ import java.util.ArrayList;
 public class MenuDeroulant extends MenuBar {
     private static ArrayList<Scenario> chScenarios;
 
-    public static MenuBar createMenuBar() {
-        MenuBar menuBar = new MenuBar();
-
-
+    public MenuDeroulant() {
         Menu menuFichiers = new Menu("Scenarios");
-
-
-
 
         for (int i = 0; i <= 8; i++) {
             MenuItem scenario = new MenuItem("Scénario " + i);
-            scenario.setUserData("s"+i);
+            scenario.setUserData("s" + i);
 
             scenario.setOnAction(VBoxRoot.getControleur());
 
@@ -30,13 +24,7 @@ public class MenuDeroulant extends MenuBar {
 
         }
 
-        menuBar.getMenus().add(menuFichiers);
-        return menuBar;
-
-
-
-
-
-
+        this.getMenus().add(menuFichiers);
     }
+
 }

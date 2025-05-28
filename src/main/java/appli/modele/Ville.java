@@ -57,6 +57,13 @@ public class Ville {
         return 99999999;
     }
 
+    public boolean compareTo(Ville parVille) {
+        if (chNom.compareTo(parVille.getChNom()) != 0) {
+            return false;
+        }
+        return true;
+    }
+
     public String toString() {
         return chNom;
     }
