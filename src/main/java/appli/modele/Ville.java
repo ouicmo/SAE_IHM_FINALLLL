@@ -50,6 +50,7 @@ public class Ville {
         return chIndex;
     }
 
+    /* Donnes la distance de la ville par rapport à la ville donnée en paramètre */
     public int getChDistanceVille(Ville parVille) {
         for (int i = 0; i < chDistanceVille.size(); i++) {
             if (chDistanceVille.get(i) == chDistanceVille.get(parVille.getChIndex())) {

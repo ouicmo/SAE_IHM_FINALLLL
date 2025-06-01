@@ -9,6 +9,7 @@ public class Membre {
     private String chNomMembre;
     private Ville chVille;
 
+    /* Donnes pour un membre donné en paramètre sa ville */
     public Membre(String parNomMembre) throws Exception {
         chNomMembre = parNomMembre;
         /*Lecture des distances du fichier distances.txt permettant d'obtenir un dictionnaire memberdic tel que (Membre,Ville)*/
