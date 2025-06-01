@@ -10,6 +10,8 @@ public class Ville {
     private int chIndex;
     private ArrayList<Integer> chDistanceVille;
 
+    /* Donnes pour une ville donnée sa distance avec les autres villes ainsi que son index
+    * c'est à dire sa position dans la liste des distances (voir le fichier distance.txt) */
     public Ville(String parNom) throws Exception {
         chNom = parNom;
         File distance = new File("data/distances.txt");

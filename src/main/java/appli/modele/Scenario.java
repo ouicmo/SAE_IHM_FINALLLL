@@ -9,6 +9,8 @@ public class Scenario {
     private String chScenarioChoisi;
     private Map<Membre, Membre> chTransactions;
 
+    /* Lis le scénario choisi en paramètre (de forme s0 pour le scénario 0 par exemple)
+    * et donnes la liste des transactions sous forme de dictionnaire de la forme (Vendeur,Acheteur)*/
     public Scenario(String parScenario) throws Exception {
         /*Lecture des scénarios du fichier scénario.txt permettant d'obtenir un dictionnaire transactions tel que (Vendeur,Acheteur) */
         Map<String,String> scenarios = new LinkedHashMap<>();
