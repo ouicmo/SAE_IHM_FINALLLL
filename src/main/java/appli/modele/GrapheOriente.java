@@ -72,7 +72,7 @@ public class    GrapheOriente {
 
 
     public Map<String, Integer> calculerDegrésEntrants() {
-        // On crée une NOUVELLE map, initialisée à 0 pour tous les sommets
+        // On crée une nouvelle map, initialisée à 0 pour tous les sommets
         TreeMap<String, Integer> degEnt = new TreeMap<>();
         for (String sommet : chSommets) {
             degEnt.put(sommet, 0);
@@ -231,132 +231,25 @@ public class    GrapheOriente {
     }
 
 
-    /*public List<String> meilleurschemins(String parSource) {
-        Map<String, Integer> degEnt = getDegreEntrant();
-        int distancetotal = 0;
-
-        // 2) Tri en arbre
-        List<String> ordre = new ArrayList<>();
-
-        String s = parSource;
-        ordre.add(s);
-        for (String v : this.getChVoisinsSortant(s)) {
-            degEnt.put(v, degEnt.get(v) - 1);
-            if (degEnt.get(v) == 0) {
-                meilleurschemins(v);
-                }
-            }
-
-
-        return ordre;
-    }*/
 
     public Ville getVille(String nomDuNoeud) {
         return chDistance.get(nomDuNoeud);
     }
 
     /**
-     * Exploration récursive pour énumérer toutes les extensions topologiques (Kahn à chaque étape),
-     * en ne gardant que les 5 meilleurs parcours (distance minimale).
-     *
-     * @param degEntCourant   Map<String,Integer> : degrés entrants à cet instant
-     * @param sourcesCourant  List<String>        : liste des sommets de degré 0 “disponibles”
-     * @param cheminCourant   List<String>        : liste des nœuds sélectionnés jusqu’ici
-     * @param distCourante    int                : distance cumulée jusqu’au dernier nœud ajouté
-     * @param bestChemins     List<List<String>> : accumule jusqu’à 5 meilleurs parcours
-     * @param bestDistances   List<Integer>      : accumule les distances correspondantes
-     */
-    private void explorerTopologique(
-            Map<String,Integer> degEntCourant,
-            List<String>        sourcesCourant,
-            List<String>        cheminCourant,
-            int                 distCourante,
-            List<List<String>>  bestChemins,
-            List<Integer>       bestDistances
-    ) {
-        // 1) Si on a vidé toutes les sources (et qu’on a parcouru TOUT chSommets),
-        //    alors le dernier ajouté doit être “VelizyA” et cheminCourant.size() == chSommets.size().
-        if (cheminCourant.size() == chSommets.size()) {
-            // On vient de placer le dernier sommet (VelizyA), on enregistre donc
-            // la copie du chemin dans bestChemins, triée par distCourante
-            List<String> copieChemin = new ArrayList<>(cheminCourant);
-            int idx = 0;
-            while (idx < bestDistances.size() && bestDistances.get(idx) < distCourante) {
-                idx++;
-            }
-            bestDistances.add(idx, distCourante);
-            bestChemins.add(idx, copieChemin);
-            if (bestDistances.size() > 5) {
-                bestDistances.remove(5);
-                bestChemins.remove(5);
-            }
-            return;
-        }
-
-        // 2) Sinon, on choisit successivement chaque sommet “u” dans sourcesCourant :
-        //    c’est un clone pour éviter de modifier directement l’original au cours de la boucle
-        List<String> sourcesClone = new ArrayList<>(sourcesCourant);
-        for (String u : sourcesClone) {
-            // A) Préparer les structures pour cette itération :
-            //    1. copier degEntCourant
-            Map<String,Integer> degEntNext = new TreeMap<>(degEntCourant);
-            //    2. copier les sources (on retire “u” puis on met à jour avec ses voisins)
-            List<String> sourcesNext = new ArrayList<>(sourcesCourant);
-            sourcesNext.remove(u);
-
-            //    3. ajouter “u” au chemin courant
-            cheminCourant.add(u);
-
-            //    4. calculer la distance entre le précédent (s’il existe) et “u”
-            int distAjout = 0;
-            if (cheminCourant.size() > 1) {
-                String precedent = cheminCourant.get(cheminCourant.size() - 2);
-                Ville vPrev   = chDistance.get(precedent);
-                Ville vU      = chDistance.get(u);
-                distAjout = vPrev.getChDistanceVille(vU);
-            }
-            int distTotalIci = distCourante + distAjout;
-
-            // B) Mettre à jour les degrés et sources en retirant “u”
-            //    Pour chaque successeur “v” de u, on décrémente degEntNext[v]—
-            //    si cela tombe à 0, on l’ajoute à sourcesNext.
-            for (String v : getChVoisinsSortant(u)) {
-                degEntNext.put(v, degEntNext.get(v) - 1);
-                if (degEntNext.get(v) == 0) {
-                    sourcesNext.add(v);
-                }
-            }
-
-            // C) Appel récursif avec ces nouvelles cartes / listes
-            explorerTopologique(
-                    degEntNext,
-                    sourcesNext,
-                    cheminCourant,
-                    distTotalIci,
-                    bestChemins,
-                    bestDistances
-            );
-
-            // D) Backtracking : on retire “u” du chemin pour revenir à l’état précédent
-            cheminCourant.remove(cheminCourant.size() - 1);
-        }
-    }
-
-    /**
-     * Retourne les 5 meilleurs parcours (distance minimale),
-     * en énumérant toutes les séquences topologiques possibles
-     * (en choisissant à chaque étape parmi les sommets de degré entrant 0).
+     * Retourne, sous forme de String, jusqu’à 1 000 parcours complets (topologiques)
+     * de distance minimale, en énumérant (partiellement) toutes les extensions topologiques
+     * mais en s’arrêtant dès qu’on a accumulé 1 000 solutions complètes.
      */
     public String meilleurschemins() {
-        // 1) Préparer les structures “globales” pour collecter les 5 meilleurs résultats
+        // 1) On stocke au plus 5 meilleurs parcours (mais on pose une limite).
         List<List<String>> bestChemins   = new ArrayList<>();
         List<Integer>      bestDistances = new ArrayList<>();
 
         // 2) Calculer une copie “fraîche” des degrés entrants pour ne pas muter chDegreEntrant
         Map<String,Integer> degEntInit = calculerDegrésEntrants();
 
-        // 3) Construire l’ensemble initial des sources (degré 0)
-        //    (ordre alphabétique pour fixer un ordre, on pourrait customiser)
+        // 3) Construire l’ensemble initial des sources (degrés 0)
         TreeSet<String> sourcesInit = new TreeSet<>();
         for (var entry : degEntInit.entrySet()) {
             if (entry.getValue() == 0) {
@@ -364,22 +257,22 @@ public class    GrapheOriente {
             }
         }
 
-        // 4) Structures auxiliaires pour la récursion “topologique”
+        // 4) Structures auxiliaires pour la récursion
         List<String> cheminCourant = new ArrayList<>();
-        // (on ne garde pas de Set de “visites” car le fait d’enlever de sources empêche
-        //  naturellement la revisite – on n’explore qu’un sommet que lorsque degEnt[u]==0)
+        int[]        compteTrouvés = new int[]{0}; // ce compteur arrêtera la récursion après 1000 parcours
 
         // 5) Lancement de l’exploration récursive
         explorerTopologique(
-                degEntInit,                     // copie des degrés entrants à chaque appel
-                new ArrayList<>(sourcesInit),   // on travaille sur une ArrayList pour pouvoir indexer/remplacer facilement
+                degEntInit,
+                new ArrayList<>(sourcesInit),
                 cheminCourant,
-                0,                              // distance cumulée au départ
+                0,                // distance accumulée au départ
                 bestChemins,
-                bestDistances
+                bestDistances,
+                compteTrouvés
         );
 
-        // 6) Formater les 5 meilleurs parcours sous forme de String “Velizy -> … (X km)”
+        // 6) Formatage des meilleurs parcours trouvés (au plus 5)
         List<String> resultatFormate = new ArrayList<>();
         for (int i = 0; i < bestChemins.size(); i++) {
             List<String> chemin = bestChemins.get(i);
@@ -390,7 +283,7 @@ public class    GrapheOriente {
                 if (n.equals("VelizyV") || n.equals("VelizyA")) {
                     sb.append("Velizy");
                 } else {
-                    sb.append(n.substring(0, n.length() - 1)); // enlève le “V” ou “A”
+                    sb.append(n.substring(0, n.length() - 1));
                 }
                 if (j < chemin.size() - 1) {
                     sb.append(" -> ");
@@ -401,8 +294,107 @@ public class    GrapheOriente {
         }
 
         return resultatFormate.toString();
-
     }
+
+    /**
+     * Exploration récursive “topologique” qui s’arrête dès que l’on a accumulé 1000 parcours complets.
+     *
+     * @param degEntCourant  Degrés entrants restants pour chaque sommet
+     * @param sourcesCourant Liste des sommets de degré 0 “disponibles” à cet instant
+     * @param cheminCourant  Chemin construit jusqu’à présent (liste de nœuds)
+     * @param distCourante   Distance accumulée jusqu’au dernier sommet ajouté
+     * @param bestChemins    Accumulateur des (jusqu’à 5) meilleurs parcours complets rencontrés
+     * @param bestDistances  Accumulateur des distances correspondantes
+     * @param compteTrouvés  Compteur (tableau de taille 1) des parcours complets déjà trouvés
+     */
+    private void explorerTopologique(
+            Map<String,Integer> degEntCourant,
+            List<String>        sourcesCourant,
+            List<String>        cheminCourant,
+            int                 distCourante,
+            List<List<String>>  bestChemins,
+            List<Integer>       bestDistances,
+            int[]               compteTrouvés
+    ) {
+        // Interruption immédiate si on a déjà trouvé 1000 parcours complets
+        if (compteTrouvés[0] >= 100000000) {
+            return;
+        }
+
+        // 1) Si on a visité tous les sommets, on est forcément sur "VelizyA". On enregistre.
+        if (cheminCourant.size() == chSommets.size()) {
+            // Copie du chemin courant
+            List<String> copieChemin = new ArrayList<>(cheminCourant);
+
+            // Insère trié par distance
+            int idx = 0;
+            while (idx < bestDistances.size() && bestDistances.get(idx) < distCourante) {
+                idx++;
+            }
+            bestDistances.add(idx, distCourante);
+            bestChemins.add(idx, copieChemin);
+            if (bestDistances.size() > 5) {
+                bestDistances.remove(5);
+                bestChemins.remove(5);
+            }
+
+            // Incrémente le compteur de parcours complets trouvés
+            compteTrouvés[0]++;
+            return;
+        }
+
+        // 2) Sinon, pour chaque sommet u dans la liste actuelle des sources...
+        //    On clone les états pour ne pas polluer l’appelant.
+        List<String> sourcesClone = new ArrayList<>(sourcesCourant);
+        for (String u : sourcesClone) {
+            if (compteTrouvés[0] >= 100000000) {
+                return; // on sort si la limite est atteinte
+            }
+
+            // A) Copier degEntCourant et sourcesCourant
+            Map<String,Integer> degEntNext = new TreeMap<>(degEntCourant);
+            List<String>        sourcesNext = new ArrayList<>(sourcesCourant);
+
+            // B) Retirer 'u' de sourcesNext (on l’utilise)
+            sourcesNext.remove(u);
+
+            // C) Ajouter 'u' au chemin courant
+            cheminCourant.add(u);
+
+            // D) Calculer la distance du segment précédent→u
+            int distAjout = 0;
+            if (cheminCourant.size() > 1) {
+                String precedent = cheminCourant.get(cheminCourant.size() - 2);
+                Ville  vPrev   = chDistance.get(precedent);
+                Ville  vU      = chDistance.get(u);
+                distAjout = vPrev.getChDistanceVille(vU);
+            }
+            int distTotalIci = distCourante + distAjout;
+
+            // E) Mettre à jour les degrés des successeurs de 'u'
+            for (String v : getChVoisinsSortant(u)) {
+                degEntNext.put(v, degEntNext.get(v) - 1);
+                if (degEntNext.get(v) == 0) {
+                    sourcesNext.add(v);
+                }
+            }
+
+            // F) Appel récursif avec les nouvelles listes
+            explorerTopologique(
+                    degEntNext,
+                    sourcesNext,
+                    cheminCourant,
+                    distTotalIci,
+                    bestChemins,
+                    bestDistances,
+                    compteTrouvés
+            );
+
+            // G) Backtracking : retirer 'u' du chemin courant
+            cheminCourant.remove(cheminCourant.size() - 1);
+        }
+    }
+
 
 
 }

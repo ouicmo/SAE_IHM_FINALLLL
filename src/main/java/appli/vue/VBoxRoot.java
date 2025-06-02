@@ -17,6 +17,7 @@ public class VBoxRoot extends VBox {
     private static Controleur chControleur;
     private static TableauPane chTableauPane;
     private static MenuDeroulant chMenuDeroulant;
+    private static VBoxSolutions chVBoxSolutions;
 
 
     public VBoxRoot() {
@@ -24,6 +25,7 @@ public class VBoxRoot extends VBox {
         chControleur = new Controleur();
         chMenuDeroulant = new MenuDeroulant();
         chTableauPane = new TableauPane();
+        chVBoxSolutions = new VBoxSolutions();
 
         Label labelTitle = new Label("Tableau des Transactions");
 
