@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * Représente un membre de l’APPLI (vendeur ou acheteur).
  * Chaque membre possède un pseudonyme (String) et une {@link Ville}
- * associée qu’on lit depuis le fichier {@code src/Données/membres_APPLI.txt}.
+ * associée qu’on lit depuis le fichier {@code data/membres_APPLI.txt}.
  * Le fichier {@code membres_APPLI.txt} doit contenir, sur chaque ligne :
  *   Pseudonyme NomVille
  * Exemple : « Psykokwak Grenoble » signifiant que « Psykokwak » habite à
@@ -20,7 +20,7 @@ public class Membre {
 
     /**
      * Construit un {@code Membre} à partir de son pseudonyme.
-     * Lit le fichier {@code src/Données/membres_APPLI.txt} pour associer le membre à sa {@code Ville}. Si le pseudonyme
+     * Lit le fichier {@code data/membres_APPLI.txt} pour associer le membre à sa {@code Ville}. Si le pseudonyme
      * {@code parNomMembre} n’existe pas, lèvera une Exception.
      *
      * @param parNomMembre le pseudonyme du membre (String), clé dans le fichier.
@@ -28,7 +28,7 @@ public class Membre {
      */
     public Membre(String parNomMembre) throws Exception {
         chNomMembre = parNomMembre;
-        File memberliste = new File("src/Données/membres_APPLI.txt");
+        File memberliste = new File("data/membres_APPLI.txt");
         Scanner scan2 = new Scanner(memberliste);
         Map<String, String> memberdic = new LinkedHashMap<>();
 
