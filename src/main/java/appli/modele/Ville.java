@@ -8,11 +8,11 @@ import java.util.Scanner;
 /**
  * Représente une ville et permet d’accéder aux distances (en kilomètres)
  * qui la séparent de toutes les autres villes définies dans le fichier
- * {data/distances.txt}.
- * Chaque ligne du fichier {distances.txt} a la forme :
+ * {@code src/Données/distances.txt}.
+ * Chaque ligne du fichier {@code distances.txt} a la forme :
  *   VilleX d12 d13 d14 ...
- * où {d12}, {d13}, etc. sont des entiers représentant les
- * distances depuis {VilleX} vers chacune des autres villes (dans
+ * où {@code d12}, {@code d13}, etc. sont des entiers représentant les
+ * distances depuis {@code VilleX} vers chacune des autres villes (dans
  * l’ordre d’apparition des villes dans le fichier).
  */
 public class Ville {
@@ -21,15 +21,17 @@ public class Ville {
     private ArrayList<Integer> chDistanceVille;
 
     /**
-     * Construit l’objet {Ville} pour le nom de ville spécifié.
+     * Construit l’objet {@code Ville} pour le nom de ville spécifié.
      * Lit le fichier {@code src/Données/distances.txt} pour construire :
-     *   la liste {chDistanceVille} des distances (en km) depuis
-     *       {parNom} vers toutes les autres villes,
+     *   la liste {@code chDistanceVille} des distances (en km) depuis
+     *       {@code parNom} vers toutes les autres villes,
      *   l’indice {@code chIndex} correspondant à la position de cette
-     *       ville dans le fichier
+     *       ville dans le fichier (0-based).
      *
-     * @param parNom le nom exact de la ville (doit figurer dans {distances.txt}).
-     * @throws Exception si le fichier ne peut pas être lu ou si la ville {parNom} n’y figure pas.
+     *
+     * @param parNom le nom exact de la ville (doit figurer dans {@code distances.txt}).
+     * @throws Exception si le fichier ne peut pas être lu ou si la ville
+     *                   {@code parNom} n’y figure pas.
      */
     public Ville(String parNom) throws Exception {
         chNom = parNom;
@@ -82,13 +84,13 @@ public class Ville {
 
     /**
      * Renvoie la distance entre cette ville et la ville donnée en paramètre.
-     * Pour cela, on utilise {parVille.getChIndex()} pour récupérer
-     * la position dans {chDistanceVille}. Si {parVille} est
-     * {null} ou hors borne, retourne {99999999}.
+     * Pour cela, on utilise {@code parVille.getChIndex()} pour récupérer
+     * la position dans {@code chDistanceVille}. Si {@code parVille} est
+     * {@code null} ou hors borne, retourne {@code 99999999}.
      *
-     * @param parVille l’autre ville (objet {Ville}) dont on veut la distance.
-     * @return la distance (int) en kilomètres, ou {99999999}
-     *         si {parVille} n’est pas valide.
+     * @param parVille l’autre ville (objet {@link Ville}) dont on veut la distance.
+     * @return la distance (int) en kilomètres, ou {@code 99999999}
+     *         si {@code parVille} n’est pas valide.
      */
     public int getChDistanceVille(Ville parVille) {
         for (int i = 0; i < chDistanceVille.size(); i++) {
@@ -101,7 +103,7 @@ public class Ville {
 
     /**
      * Compares les noms des villes.
-     * @param parVille l’autre ville (objet {Ville}) dont on veut la comparaison.
+     * @param parVille l’autre ville (objet {@link Ville}) dont on veut la comparaison.
      *
      * @return  true (boolean) si la ville est la même false (boolean) sinon.
      */

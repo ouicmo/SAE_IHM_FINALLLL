@@ -1,6 +1,29 @@
 package appli.modele;
 import java.util.*;
 
+/**
+ * Modélise le graphe orienté correspondant au problème de livraisons
+ * de cartes Pokémon pour l’APPLI.
+ * Chaque transaction “VilleV → VilleA” du {@link Scenario} est traduite
+ * en arcs :
+ *   - VelizyV → VilleV
+ *   - VilleV → VilleA
+ *   - VilleA → VelizyA
+ * On conserve :
+ *   - {@code chSommets} : la liste de tous les noms de sommets
+ *   - {@code chVoisinsSortant} : la table d’adjacence (TreeMap&lt;String,LinkedHashSet&lt;String&gt;&gt;)
+ *   - {@code chDistance} : map (String → {@link Ville}) pour accéder à l’objet Ville
+ *   - {@code chScenario} : le {@link Scenario} utilisé pour construire le graphe
+ * Méthodes principales :
+ *   - {@link #triTopologique()} : effectue un tri topologique simple
+ *       et retourne l’ordre de parcours + distance totale
+ *   - {@link #triDistance()} : variante « à la distance » : parmi les sources
+ *       on choisit toujours la même “plus proche” du sommet précédent
+ *   - {@link #meilleurschemins()} : énumère (jusqu’à 10 000 000) tous les chemins
+ *       possibles au moyen d’une récursion
+ *       topologique, et retourne les 5 plus courts.
+ * </ul>
+ */
 public class    GrapheOriente {
     private TreeMap<String, LinkedHashSet<String>> chVoisinsSortant;
     private ArrayList<String> chSommets;
@@ -8,6 +31,24 @@ public class    GrapheOriente {
     private Map<String, Integer> chDegreEntrant;
     private Scenario chScenario;
 
+    /**
+     * Construit le graphe orienté à partir du {@link Scenario} donné.
+     *   Ajoute deux sommets spéciaux : “VelizyV” (point de départ, degré entrant 0)
+     *       et “VelizyA” (sommet final, degré sortant 0).
+     *   Pour chaque transaction (Membre vendeur → Membre acheteur) :
+     *       - Récupère la ville du vendeur (ex. “Grenoble”) et crée le sommet “GrenobleV” si absent.
+     *       - Récupère la ville de l’acheteur (ex. “Lyon”) et crée le sommet “LyonA” si absent.
+     *       - Ajoute l’arc {@code VelizyV → “GrenobleV”}.
+     *       - Ajoute l’arc {“GrenobleV” → “LyonA”}.
+     *       - Ajoute l’arc {“LyonA” → “VelizyA”}.
+     *   S’assure enfin que chaque sommet figure dans {@code chVoisinsSortant}
+     *       (même si sa liste de successeurs est vide).
+     * On instancie également {@code chDistance} pour chaque sommet :
+     * la clé « “VilleV” » ou « “VilleA” » pointe vers l’objet {@link Ville} correspondant.
+     *
+     * @param parScenario le {@link Scenario} contenant les transactions
+     * @throws Exception si un membre ou une ville n’est pas trouvé lors de la création
+     */
     public GrapheOriente(Scenario parScenario) throws Exception {
         // 1) Initialisation des champs
         chScenario = parScenario;
@@ -70,7 +111,15 @@ public class    GrapheOriente {
         }
     }
 
-
+    /**
+     * Reconstruit (à chaque appel) une nouvelle map des degrés entrants de chaque sommet,
+     * sans modifier aucune variable interne.
+     *   - Initialise tous les degrés à 0 pour chaque nom de sommet dans {@code chSommets}.
+     *   - Parcourt chaque entrée {@code (u -> listeVoisins)} dans {@code chVoisinsSortant},
+     *       et fait {@code degEnt[v]++} pour chaque voisin {@code v} de {@code u}.
+     *
+     * @return une {@code Map<String,Integer>} donnant, pour chaque sommet, son nombre d’arcs entrants.
+     */
     public Map<String, Integer> calculerDegrésEntrants() {
         // On crée une nouvelle map, initialisée à 0 pour tous les sommets
         TreeMap<String, Integer> degEnt = new TreeMap<>();
@@ -86,16 +135,33 @@ public class    GrapheOriente {
         return degEnt;
     }
 
-
+    /**Retournes le {@code chSommets} correspondant au graphe construit */
     public Scenario getChScenario() {
         return chScenario;
     }
 
-
+    /**
+     * Retourne l’ensemble des successeurs (voisins sortants) du sommet {@code parVille}.
+     *
+     * @param parVille le nom du sommet (ex. "VelizyV", "GrenobleV", "LyonA", …)
+     * @return un {@code LinkedHashSet<String>} des voisins sortants, ou {@code null}
+     *         si {@code parVille} n’existe pas dans le graphe.
+     */
     public LinkedHashSet<String> getChVoisinsSortant(String parVille) {
         return chVoisinsSortant.get(parVille);
     }
 
+    /**
+     * Effectue un tri topologique « classique » sur l’ensemble des sommets,
+     * puis calcule la distance totale parcourue en additionnant chaque segment consécutif.
+     * Le résultat est retourné sous la forme :
+     *   Chemin : Velizy -> Ville1 -> Ville2 -> … -> Velizy
+     *   Distance totale : XXX
+     * Les doublons consécutifs (comme « Lyon » provenant de « LyonV » puis « LyonA ») sont fusionnés
+     * à l’affichage pour n’apparaître qu’une fois.
+     *
+     * @return une {@code String} décrivant l’ordre de parcours et la distance totale.
+     */
     public String triTopologique() {
         Map<String, Integer> degEnt = calculerDegrésEntrants();
         int distancetotal = 0;
@@ -154,6 +220,16 @@ public class    GrapheOriente {
         return "Chemin : " + chemin + "\n" + "Distance totale :" + distancetotal;
     }
 
+    /**
+     * Variante du tri topologique qui, à chaque étape, choisit parmi les sources (degrés 0)
+     * celle qui minimise la distance depuis le sommet précédent.
+     * Le résultat est retourné sous la forme :
+     *   Chemin : Velizy -> Ville1 -> Ville2 -> … -> Velizy
+     *   Distance totale : XXX
+     * où chaque « Ville » est affichée sans doublons consécutifs.
+     *
+     * @return une {@code String} décrivant l’ordre « à la distance » et la distance totale.
+     */
     public String triDistance() {
         Map<String, Integer> degEnt = calculerDegrésEntrants();
         int distancetotal = 0;
@@ -237,9 +313,17 @@ public class    GrapheOriente {
     }
 
     /**
-     * Retourne, sous forme de String, jusqu’à 100 000 000 parcours complets (topologiques)
-     * de distance minimale, en énumérant (partiellement) toutes les extensions topologiques
-     * mais en s’arrêtant dès qu’on a accumulé 100 000 000 solutions complètes.
+     * Énumère (jusqu’à 10 000 000) tous les chemins possibles qui satisfont
+     * l’ensemble des transactions , en ne gardant que les 5
+     * plus courts (distance minimale).
+     * Chaque parcours commence à “VelizyV”, visite toutes
+     * les paires “VilleV→VilleA” dans un ordre valide, puis finit par “VelizyA”.
+     * Le résultat est retourné sous forme de liste de 5 chaînes :
+     *   [Velizy -> Ville1 -> … -> Velizy (XXX km),
+     *    Velizy -> …,
+     *    …]
+     *
+     * @return une {@code String} représentant la liste des 5 meilleurs parcours.
      */
     public String meilleurschemins() {
         // 1) On stocke au plus 5 meilleurs parcours (mais on pose une limite).
@@ -297,15 +381,32 @@ public class    GrapheOriente {
     }
 
     /**
-     * Exploration récursive “topologique” qui s’arrête dès que l’on a accumulé 1000 parcours complets.
+     * Exploration récursive “topologique” permettant d’énumérer jusqu’à 1000
+     * parcours complets, puis de conserver les 5 plus courts (distance min).
+     * À chaque appel :
+     *   - Si {@code cheminCourant.size() == chSommets.size()}, alors on a
+     *       construit un parcours complet (dernier sommet = VelizyA) : on l’enregistre
+     *       dans {@code bestChemins/bestDistances}, on incrémente {@code compteTrouvés},
+     *       puis on fait un return (pas d’autres explorations sur cette branche).
+     *   - Sinon, on parcourt chaque sommet {@code u} de {@code sourcesCourant}, on :
+     *       - clone {@code degEntCourant} en {@code degEntNext}, et
+     *           {@code sourcesCourant} en {@code sourcesNext},
+     *       - retire {@code u} de {@code sourcesNext}, ajoute {@code u} à
+     *           {@code cheminCourant}, calcule la distance partielle,
+     *       - pour chaque successeur {@code v} de {@code u}, décrit par
+     *           {@code getChVoisinsSortant(u)}, on fait {@code degEntNext.put(v, …–1)},
+     *           et si cela tombe à zero on ajoute {@code v} à {@code sourcesNext},
+     *       - appelle récursivement {@code explorerTopologique(degEntNext, sourcesNext, …)},
+     *       - et enfin « backtrack » en retirant {@code u} de {@code cheminCourant} pour
+     *           pouvoir réessayer un autre {@code u} au même niveau.
      *
-     * @param degEntCourant  Degrés entrants restants pour chaque sommet
-     * @param sourcesCourant Liste des sommets de degré 0 “disponibles” à cet instant
-     * @param cheminCourant  Chemin construit jusqu’à présent (liste de nœuds)
-     * @param distCourante   Distance accumulée jusqu’au dernier sommet ajouté
-     * @param bestChemins    Accumulateur des (jusqu’à 5) meilleurs parcours complets rencontrés
-     * @param bestDistances  Accumulateur des distances correspondantes
-     * @param compteTrouvés  Compteur (tableau de taille 1) des parcours complets déjà trouvés
+     * @param degEntCourant  copies des degrés entrants à l’instant (Map<String,Integer>).
+     * @param sourcesCourant l’ensemble des sommets de degré 0 disponibles (List<String>).
+     * @param cheminCourant  la liste des sommets choisis dans l’ordre, pour la branche en cours.
+     * @param distCourante   la distance cumulée depuis le départ (“VelizyV”) jusqu’au dernier sommet ajouté.
+     * @param bestChemins    accumulateur des parcours complets (List<List<String>>) les 5 meilleurs.
+     * @param bestDistances  accumulateur des distances correspondantes (List<Integer>), trié croissant.
+     * @param compteTrouvés  compteur partagé (tableau int[0]) pour s’arrêter dès qu’on atteint 10 000 000 parcours complets.
      */
     private void explorerTopologique(
             Map<String,Integer> degEntCourant,
