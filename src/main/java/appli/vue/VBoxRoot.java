@@ -29,11 +29,9 @@ public class VBoxRoot extends VBox {
 
         Label labelTitle = new Label("Tableau des Transactions");
 
-        HBox formBox = new HBox(10);
-        formBox.setPadding(new Insets(10));
+        Label labelSolution = new Label("Solutions");
 
-
-        this.getChildren().addAll(chMenuDeroulant, labelTitle, chTableauPane, formBox);
+        this.getChildren().addAll(chMenuDeroulant, labelTitle, chTableauPane,labelSolution, chVBoxSolutions);
 
 
     }
@@ -49,5 +47,7 @@ public class VBoxRoot extends VBox {
     public static TableauPane getTableauPane() {
         return chTableauPane;
     }
+
+    public static VBoxSolutions getVBoxSolutions() {return chVBoxSolutions; }
 
 }

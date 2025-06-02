@@ -8,7 +8,9 @@ public class VBoxSolutions extends VBox {
 
     public VBoxSolutions() {
         super(30);
-        chLabel = new Label("");
+        chLabel = new Label("Test");
+
+        this.getChildren().add(chLabel);
 
     }
 

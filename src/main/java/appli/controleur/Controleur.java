@@ -19,7 +19,6 @@ public class Controleur implements EventHandler {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            //VBoxRoot.getTableauPane()
             GrapheOriente grapheduscen;
             try {
                 grapheduscen = new GrapheOriente(scenario);
@@ -27,7 +26,7 @@ public class Controleur implements EventHandler {
                 throw new RuntimeException(e);
             }
             VBoxRoot.getTableauPane().setTableauPane(grapheduscen);
-
+            VBoxRoot.getVBoxSolutions().setChLabel(grapheduscen.meilleurschemins());
 
         }
     }

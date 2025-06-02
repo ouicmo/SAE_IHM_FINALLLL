@@ -177,7 +177,7 @@ public class    GrapheOriente {
             for (String v : this.getChVoisinsSortant(s)) {
                 degEnt.put(v, degEnt.get(v) - 1);
                 if (degEnt.get(v) == 0) {
-                    // => v devient une nouvelle source : on l’insère en fonction de la distance s→v
+                    // => v devient une nouvelle source : on l’insère en fonction de la distance entre s et v
                     int dV = chDistance.get(s).getChDistanceVille(chDistance.get(v));
                     int insertPos = sources.size(); // par défaut, on le met en fin
 
@@ -237,20 +237,20 @@ public class    GrapheOriente {
     }
 
     /**
-     * Retourne, sous forme de String, jusqu’à 1 000 parcours complets (topologiques)
+     * Retourne, sous forme de String, jusqu’à 100 000 000 parcours complets (topologiques)
      * de distance minimale, en énumérant (partiellement) toutes les extensions topologiques
-     * mais en s’arrêtant dès qu’on a accumulé 1 000 solutions complètes.
+     * mais en s’arrêtant dès qu’on a accumulé 100 000 000 solutions complètes.
      */
     public String meilleurschemins() {
         // 1) On stocke au plus 5 meilleurs parcours (mais on pose une limite).
         List<List<String>> bestChemins   = new ArrayList<>();
         List<Integer>      bestDistances = new ArrayList<>();
 
-        // 2) Calculer une copie “fraîche” des degrés entrants pour ne pas muter chDegreEntrant
+        // 2) On calcule une copie des degrés entrants pour ne pas muter chDegreEntrant
         Map<String,Integer> degEntInit = calculerDegrésEntrants();
 
-        // 3) Construire l’ensemble initial des sources (degrés 0)
-        TreeSet<String> sourcesInit = new TreeSet<>();
+        // 3) On Construit l’ensemble initial des sources (degrés 0)
+        ArrayList<String> sourcesInit = new ArrayList<>();
         for (var entry : degEntInit.entrySet()) {
             if (entry.getValue() == 0) {
                 sourcesInit.add(entry.getKey());

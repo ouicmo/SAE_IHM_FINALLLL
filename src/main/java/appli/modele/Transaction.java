@@ -40,8 +40,8 @@ public class Transaction {
         return "Vendeur : " + chVendeur.toString() + "\nAcheteur : " + chAcheteur.toString() + "\nDistance : " + chDistance;
     }
 
-    public static void main(String[] a) throws Exception {
+    /*public static void main(String[] a) throws Exception {
         Transaction ta = new Transaction(new Membre("Bulbizarre"),new Membre("Salamèche"));
         System.out.println(ta);
-    }
+    }*/
 }
