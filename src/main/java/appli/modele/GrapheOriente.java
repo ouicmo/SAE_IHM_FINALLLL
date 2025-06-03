@@ -363,15 +363,17 @@ public class    GrapheOriente {
             int dist = bestDistances.get(i);
             StringBuilder sb = new StringBuilder();
             sb.append("Chemin :");
+            String villePrecedente = "";
             for (int j = 0; j < chemin.size(); j++) {
-                String n = chemin.get(j);
-                if (n.equals("VelizyV") || n.equals("VelizyA")) {
-                    sb.append("Velizy");
-                } else {
-                    sb.append(n.substring(0, n.length() - 1));
-                }
-                if (j < chemin.size() - 1) {
-                    sb.append(" -> ");
+                String nœud = chemin.get(j);
+                String nomVille;
+                nomVille = nœud.substring(0, nœud.length() - 1);
+                if (!nomVille.equals(villePrecedente)) {
+                    if (sb.length() > 0) {
+                        sb.append(" -> ");
+                    }
+                    sb.append(nomVille);
+                    villePrecedente = nomVille;
                 }
             }
             sb.append("\nDistance totale : ").append(dist);
