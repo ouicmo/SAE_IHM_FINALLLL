@@ -29,7 +29,7 @@ public class VBoxRoot extends VBox {
 
         Label labelTitle = new Label("Tableau des Transactions");
 
-        Label labelSolution = new Label("Solutions");
+        Label labelSolution = new Label("Solutions :");
 
         this.getChildren().addAll(chMenuDeroulant, labelTitle, chTableauPane,labelSolution, chVBoxSolutions);
 
