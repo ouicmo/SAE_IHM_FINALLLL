@@ -22,7 +22,7 @@ public class Ville {
 
     /**
      * Construit l’objet {@code Ville} pour le nom de ville spécifié.
-     * Lit le fichier {@code src/Données/distances.txt} pour construire :
+     * Lit le fichier {@code data/distances.txt} pour construire :
      *   la liste {@code chDistanceVille} des distances (en km) depuis
      *       {@code parNom} vers toutes les autres villes,
      *   l’indice {@code chIndex} correspondant à la position de cette
