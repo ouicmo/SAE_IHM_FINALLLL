@@ -8,7 +8,7 @@ public class VBoxSolutions extends VBox {
 
     public VBoxSolutions() {
         super(30);
-        chLabel = new Label("Test");
+        chLabel = new Label("Choisissez un scénario pour afficher la solution");
 
         this.getChildren().add(chLabel);
 

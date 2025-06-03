@@ -121,17 +121,8 @@ public class    GrapheOriente {
      * @return une {@code Map<String,Integer>} donnant, pour chaque sommet, son nombre d’arcs entrants.
      */
     public Map<String, Integer> calculerDegrésEntrants() {
-        // On crée une nouvelle map, initialisée à 0 pour tous les sommets
-        TreeMap<String, Integer> degEnt = new TreeMap<>();
-        for (String sommet : chSommets) {
-            degEnt.put(sommet, 0);
-        }
-        // Pour chaque arc u→v, on fait degEnt[v]++
-        for (Map.Entry<String, LinkedHashSet<String>> entry : chVoisinsSortant.entrySet()) {
-            for (String v : entry.getValue()) {
-                degEnt.put(v, degEnt.get(v) + 1);
-            }
-        }
+        // On crée une nouvelle map qui copie chDegreEntrant pour ne pas la modifier
+        Map<String, Integer> degEnt = new LinkedHashMap<>(chDegreEntrant);
         return degEnt;
     }
 
@@ -144,8 +135,7 @@ public class    GrapheOriente {
      * Retourne l’ensemble des successeurs (voisins sortants) du sommet {@code parVille}.
      *
      * @param parVille le nom du sommet (ex. "VelizyV", "GrenobleV", "LyonA", …)
-     * @return un {@code LinkedHashSet<String>} des voisins sortants, ou {@code null}
-     *         si {@code parVille} n’existe pas dans le graphe.
+     * @return un {@code LinkedHashSet<String>} des voisins sortants
      */
     public LinkedHashSet<String> getChVoisinsSortant(String parVille) {
         return chVoisinsSortant.get(parVille);
@@ -226,7 +216,6 @@ public class    GrapheOriente {
      * Le résultat est retourné sous la forme :
      *   Chemin : Velizy -> Ville1 -> Ville2 -> … -> Velizy
      *   Distance totale : XXX
-     * où chaque « Ville » est affichée sans doublons consécutifs.
      *
      * @return une {@code String} décrivant l’ordre « à la distance » et la distance totale.
      */
@@ -362,14 +351,14 @@ public class    GrapheOriente {
             List<String> chemin = bestChemins.get(i);
             int dist = bestDistances.get(i);
             StringBuilder sb = new StringBuilder();
-            sb.append("Chemin :");
+            sb.append("Chemin : ");
             String villePrecedente = "";
             for (int j = 0; j < chemin.size(); j++) {
                 String nœud = chemin.get(j);
                 String nomVille;
                 nomVille = nœud.substring(0, nœud.length() - 1);
                 if (!nomVille.equals(villePrecedente)) {
-                    if (sb.length() > 0) {
+                    if (sb.length() > 9) {
                         sb.append(" -> ");
                     }
                     sb.append(nomVille);
@@ -451,7 +440,7 @@ public class    GrapheOriente {
         }
 
         // 2) Sinon, pour chaque sommet u dans la liste actuelle des sources...
-        //    On clone les états pour ne pas polluer l’appelant.
+        //    On clone les états pour ne pas "polluer" l’appelant.
         List<String> sourcesClone = new ArrayList<>(sourcesCourant);
         for (String u : sourcesClone) {
             if (compteTrouvés[0] >= 5000000) {
@@ -460,15 +449,15 @@ public class    GrapheOriente {
 
             // A) Copier degEntCourant et sourcesCourant
             Map<String,Integer> degEntNext = new TreeMap<>(degEntCourant);
-            List<String>        sourcesNext = new ArrayList<>(sourcesCourant);
+            List<String> sourcesNext = new ArrayList<>(sourcesCourant);
 
-            // B) Retirer 'u' de sourcesNext (on l’utilise)
+            // B) Retire 'u' de sourcesNext (on l’utilise)
             sourcesNext.remove(u);
 
-            // C) Ajouter 'u' au chemin courant
+            // C) Ajoute 'u' au chemin courant
             cheminCourant.add(u);
 
-            // D) Calculer la distance du segment précédent→u
+            // D) Calcule la distance du segment précédent→u
             int distAjout = 0;
             if (cheminCourant.size() > 1) {
                 String precedent = cheminCourant.get(cheminCourant.size() - 2);
@@ -478,7 +467,7 @@ public class    GrapheOriente {
             }
             int distTotalIci = distCourante + distAjout;
 
-            // E) Mettre à jour les degrés des successeurs de 'u'
+            // E) Met à jour les degrés des successeurs de 'u'
             for (String v : getChVoisinsSortant(u)) {
                 degEntNext.put(v, degEntNext.get(v) - 1);
                 if (degEntNext.get(v) == 0) {
