@@ -3,7 +3,6 @@ package appli.modele;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -24,7 +23,7 @@ public class GrapheOrienteTest {
     @Test
     void testCalculerDegreEntrant() throws Exception {
         // On récupère la méthode privée via réflexivité ou on recalcule ici pour vérifier
-        Map<String,Integer> degEnt = g0.calculerDegrésEntrants();
+        Map<String,Integer> degEnt = g0.copieChDegrésEntrants();
         // Dans le scénario 0, la seule source initiale est “VelizyV” → degré = 0
         assertEquals(0, degEnt.get("VelizyV"));
         // Tous les autres sommets doivent avoir degré ≥ 1

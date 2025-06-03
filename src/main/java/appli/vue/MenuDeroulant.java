@@ -24,8 +24,6 @@ public class MenuDeroulant extends MenuBar {
 
         }
 
-        MenuItem newscenario = new MenuItem("Nouveau Scenario");
-
         this.getMenus().add(menuFichiers);
     }
 

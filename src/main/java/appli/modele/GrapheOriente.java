@@ -120,7 +120,7 @@ public class    GrapheOriente {
      *
      * @return une {@code Map<String,Integer>} donnant, pour chaque sommet, son nombre d’arcs entrants.
      */
-    public Map<String, Integer> calculerDegrésEntrants() {
+    public Map<String, Integer> copieChDegrésEntrants() {
         // On crée une nouvelle map qui copie chDegreEntrant pour ne pas la modifier
         Map<String, Integer> degEnt = new LinkedHashMap<>(chDegreEntrant);
         return degEnt;
@@ -153,7 +153,7 @@ public class    GrapheOriente {
      * @return une {@code String} décrivant l’ordre de parcours et la distance totale.
      */
     public String triTopologique() {
-        Map<String, Integer> degEnt = calculerDegrésEntrants();
+        Map<String, Integer> degEnt = copieChDegrésEntrants();
         int distancetotal = 0;
 
         // 1) File des sources (degrés 0)
@@ -192,8 +192,6 @@ public class    GrapheOriente {
             String nœud = ordre.get(i);
             // Récupère le nom de la ville sans le suffixe "V"/"A"
             String nomVille = nœud.substring(0, nœud.length() - 1);
-
-
             // On n’écrit la ville que si elle est différente de la précédente
             if (!nomVille.equals(villePrécedente)) {
                 if (sb.length() > 0) {
@@ -220,14 +218,14 @@ public class    GrapheOriente {
      * @return une {@code String} décrivant l’ordre « à la distance » et la distance totale.
      */
     public String triDistance() {
-        Map<String, Integer> degEnt = calculerDegrésEntrants();
+        Map<String, Integer> degEnt = copieChDegrésEntrants();
         int distancetotal = 0;
 
         // 1) File des sources (degrés 0)
         ArrayList<String> sources = new ArrayList<>();
-        for (var e : degEnt.entrySet()) {
-            if (e.getValue() == 0) {
-                sources.add(e.getKey());
+        for (Map.Entry<String, Integer> sommet : degEnt.entrySet()) {
+            if (sommet.getValue() == 0) {
+                sources.add(sommet.getKey());
             }
         }
 
@@ -235,27 +233,27 @@ public class    GrapheOriente {
         List<String> ordre = new ArrayList<>();
         while (!sources.isEmpty()) {
             // On prend en tête la première ville de la file
-            String s = sources.remove(0);
-            ordre.add(s);
+            String source = sources.remove(0);
+            ordre.add(source);
 
-            // On met à jour les degrés des successeurs de s
-            for (String v : this.getChVoisinsSortant(s)) {
-                degEnt.put(v, degEnt.get(v) - 1);
-                if (degEnt.get(v) == 0) {
-                    // => v devient une nouvelle source : on l’insère en fonction de la distance entre s et v
-                    int dV = chDistance.get(s).getChDistanceVille(chDistance.get(v));
+            // On met à jour les degrés des successeurs de source
+            for (String voisin : this.getChVoisinsSortant(source)) {
+                degEnt.put(voisin, degEnt.get(voisin) - 1);
+                if (degEnt.get(voisin) == 0) {
+                    // => voisin devient une nouvelle source : on l’insère en fonction de la distance entre source et voisin
+                    int dV = chDistance.get(source).getChDistanceVille(chDistance.get(voisin));
                     int insertPos = sources.size(); // par défaut, on le met en fin
 
-                    // Chercher dans 'sources' l’endroit où la distance s→sources.get(i) est >= dV
+                    // On cherche dans sources l’endroit où la distance source→sources.get(i) est >= dV
                     for (int i = 0; i < sources.size(); i++) {
                         String candidat = sources.get(i);
-                        int dC = chDistance.get(s).getChDistanceVille(chDistance.get(candidat));
+                        int dC = chDistance.get(source).getChDistanceVille(chDistance.get(candidat));
                         if (dV < dC) {
                             insertPos = i;
                             break;
                         }
                     }
-                    sources.add(insertPos, v);
+                    sources.add(insertPos, voisin);
                 }
             }
         }
@@ -276,11 +274,7 @@ public class    GrapheOriente {
         for (int i = 0; i < ordre.size(); i++) {
             String nœud = ordre.get(i);
             String nomVille;
-            if (nœud.equals("VelizyV") || nœud.equals("VelizyA")) {
-                nomVille = "Velizy";
-            } else {
-                nomVille = nœud.substring(0, nœud.length() - 1);
-            }
+            nomVille = nœud.substring(0, nœud.length() - 1);
             if (!nomVille.equals(villePrecedente)) {
                 if (sb.length() > 0) {
                     sb.append(" -> ");
@@ -319,20 +313,20 @@ public class    GrapheOriente {
         List<List<String>> bestChemins = new ArrayList<>();
         List<Integer> bestDistances = new ArrayList<>();
 
-        // 2) On calcule une copie des degrés entrants
-        Map<String, Integer> degEntInit = calculerDegrésEntrants();
+        // 2) On fait une copie des degrés entrants
+        Map<String, Integer> degEntInit = copieChDegrésEntrants();
 
         // 3) On construit l’ensemble initial des sources (degrés 0)
         ArrayList<String> sourcesInit = new ArrayList<>();
-        for (var entry : degEntInit.entrySet()) {
-            if (entry.getValue() == 0) {
-                sourcesInit.add(entry.getKey());
+        for (var source : degEntInit.entrySet()) {
+            if (source.getValue() == 0) {
+                sourcesInit.add(source.getKey());
             }
         }
 
         // 4) Structures auxiliaires pour la récursion
         List<String> cheminCourant = new ArrayList<>();
-        int[] compteTrouvés = new int[]{0}; // ce compteur arrêtera la récursion après 1000 parcours
+        int[] compteTrouvés = new int[]{0}; // ce compteur arrêtera la récursion après X parcours
 
         // 5) Lancement de l’exploration récursive
         explorerTopologique(
@@ -345,9 +339,10 @@ public class    GrapheOriente {
                 compteTrouvés
         );
 
-        // 6) Formatage des meilleurs parcours trouvés (au plus 5)
+        // 6) Formatage des meilleurs parcours trouvés (au plus k)
         List<String> resultatFormate = new ArrayList<>();
-        for (int i = 0; i < bestChemins.size(); i++) {
+        int k = 5;
+        for (int i = 0; i < k; i++) {
             List<String> chemin = bestChemins.get(i);
             int dist = bestDistances.get(i);
             StringBuilder sb = new StringBuilder();
