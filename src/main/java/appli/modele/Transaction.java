@@ -43,6 +43,22 @@ public class Transaction {
         return chDistance;
     }
 
+    public Membre getChVendeur() {
+        return chVendeur;
+    }
+
+    public Membre getChAcheteur() {
+        return chAcheteur;
+    }
+
+    public Ville getChVilleAcheteur() {
+        return chVilleAcheteur;
+    }
+
+    public Ville getChVilleVendeur() {
+        return chVilleVendeur;
+    }
+
     @Override
     public String toString() {
         return "Vendeur  : " + chVendeur.toString()  + "\n" +

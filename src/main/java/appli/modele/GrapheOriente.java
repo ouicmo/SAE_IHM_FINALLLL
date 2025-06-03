@@ -313,7 +313,7 @@ public class    GrapheOriente {
     }
 
     /**
-     * Énumère (jusqu’à 10 000 000) tous les chemins possibles qui satisfont
+     * Énumère (jusqu’à 5 000 000) tous les chemins possibles qui satisfont
      * l’ensemble des transactions , en ne gardant que les 5
      * plus courts (distance minimale).
      * Chaque parcours commence à “VelizyV”, visite toutes
@@ -327,13 +327,13 @@ public class    GrapheOriente {
      */
     public String meilleurschemins() {
         // 1) On stocke au plus 5 meilleurs parcours (mais on pose une limite).
-        List<List<String>> bestChemins   = new ArrayList<>();
-        List<Integer>      bestDistances = new ArrayList<>();
+        List<List<String>> bestChemins = new ArrayList<>();
+        List<Integer> bestDistances = new ArrayList<>();
 
-        // 2) On calcule une copie des degrés entrants pour ne pas muter chDegreEntrant
-        Map<String,Integer> degEntInit = calculerDegrésEntrants();
+        // 2) On calcule une copie des degrés entrants
+        Map<String, Integer> degEntInit = calculerDegrésEntrants();
 
-        // 3) On Construit l’ensemble initial des sources (degrés 0)
+        // 3) On construit l’ensemble initial des sources (degrés 0)
         ArrayList<String> sourcesInit = new ArrayList<>();
         for (var entry : degEntInit.entrySet()) {
             if (entry.getValue() == 0) {
@@ -343,7 +343,7 @@ public class    GrapheOriente {
 
         // 4) Structures auxiliaires pour la récursion
         List<String> cheminCourant = new ArrayList<>();
-        int[]        compteTrouvés = new int[]{0}; // ce compteur arrêtera la récursion après 1000 parcours
+        int[] compteTrouvés = new int[]{0}; // ce compteur arrêtera la récursion après 1000 parcours
 
         // 5) Lancement de l’exploration récursive
         explorerTopologique(
@@ -362,6 +362,7 @@ public class    GrapheOriente {
             List<String> chemin = bestChemins.get(i);
             int dist = bestDistances.get(i);
             StringBuilder sb = new StringBuilder();
+            sb.append("Chemin :");
             for (int j = 0; j < chemin.size(); j++) {
                 String n = chemin.get(j);
                 if (n.equals("VelizyV") || n.equals("VelizyA")) {
@@ -373,15 +374,18 @@ public class    GrapheOriente {
                     sb.append(" -> ");
                 }
             }
-            sb.append(" (").append(dist).append(" km)");
+            sb.append("\nDistance totale : ").append(dist);
             resultatFormate.add(sb.toString());
         }
-
-        return resultatFormate.toString();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i <= resultatFormate.size() - 1; i++) {
+            result.append(resultatFormate.get(i)+"\n");
+        }
+        return result.toString();
     }
 
     /**
-     * Exploration récursive “topologique” permettant d’énumérer jusqu’à 1000
+     * Exploration récursive “topologique” permettant d’énumérer jusqu’à 5 000 000
      * parcours complets, puis de conserver les 5 plus courts (distance min).
      * À chaque appel :
      *   - Si {@code cheminCourant.size() == chSommets.size()}, alors on a
@@ -417,8 +421,8 @@ public class    GrapheOriente {
             List<Integer>       bestDistances,
             int[]               compteTrouvés
     ) {
-        // Interruption immédiate si on a déjà trouvé 1000 parcours complets
-        if (compteTrouvés[0] >= 100000000) {
+        // Interruption immédiate si on a déjà trouvé 5 000 000 parcours complets
+        if (compteTrouvés[0] >= 5000000) {
             return;
         }
 
@@ -448,7 +452,7 @@ public class    GrapheOriente {
         //    On clone les états pour ne pas polluer l’appelant.
         List<String> sourcesClone = new ArrayList<>(sourcesCourant);
         for (String u : sourcesClone) {
-            if (compteTrouvés[0] >= 100000000) {
+            if (compteTrouvés[0] >= 5000000) {
                 return; // on sort si la limite est atteinte
             }
 
