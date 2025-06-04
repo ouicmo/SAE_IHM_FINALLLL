@@ -11,9 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MembreTest {
 
 
-
-
-
     @Test
     void testConstructeurEtGetChVille() throws Exception {
         // On suppose que "Psykokwak" est dans membres_APPLI.txt

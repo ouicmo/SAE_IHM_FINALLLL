@@ -9,7 +9,7 @@ import java.io.File;
 public class Main extends Application {
     public void start(Stage stage) throws Exception {
         VBoxRoot root = new VBoxRoot();
-        Scene scene = new Scene(root, 1500, 850);
+        Scene scene = new Scene(root, 1500, 1000);
         stage.setScene(scene);
         stage.setTitle("Table de scenario");
         stage.show();

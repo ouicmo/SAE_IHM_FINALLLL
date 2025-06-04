@@ -426,9 +426,9 @@ public class    GrapheOriente {
             }
             bestDistances.add(idx, distCourante);
             bestChemins.add(idx, copieChemin);
-            if (bestDistances.size() > 5) {
-                bestDistances.remove(5);
-                bestChemins.remove(5);
+            if (bestDistances.size() > 10) {
+                bestDistances.remove(10);
+                bestChemins.remove(10);
             }
 
             // Incrémente le compteur de parcours complets trouvés

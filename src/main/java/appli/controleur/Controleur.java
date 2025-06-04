@@ -27,7 +27,8 @@ public class Controleur implements EventHandler {
             }
             VBoxRoot.getTableauPane().setTableauPane(grapheduscen);
             VBoxRoot.getVBoxSolutions().setChLabel("Tri Topologique : \n" + grapheduscen.triTopologique() + "\n \n Récursivité :\n" +  grapheduscen.meilleurschemins());
-
+            /*try{PrintWriter writer = new PrintWriter(nouveauscenario)))}
+             writer.println(item.getUserData*/
         }
     }
 
