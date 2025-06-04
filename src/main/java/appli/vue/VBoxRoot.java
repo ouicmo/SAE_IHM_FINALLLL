@@ -37,7 +37,7 @@ public class VBoxRoot extends VBox {
         Scenario scenario = new Scenario("s1");
         GrapheOriente grapheduscen = new GrapheOriente(scenario);
         VBoxRoot.getTableauPane().setTableauPane(grapheduscen);
-        VBoxRoot.getVBoxSolutions().setChLabel(grapheduscen.meilleurschemins());
+        VBoxRoot.getVBoxSolutions().setChLabel("Tri Topologique : \n" + grapheduscen.triTopologique() + "\n \n Récursivité :\n" + grapheduscen.meilleurschemins());
     }
 
     public static Controleur getControleur() {
