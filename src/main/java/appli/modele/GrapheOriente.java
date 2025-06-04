@@ -410,7 +410,7 @@ public class    GrapheOriente {
             int[]               compteTrouvés
     ) {
         // Interruption immédiate si on a déjà trouvé k parcours complets
-        if (compteTrouvés[0] >= 5000000) {
+        if (compteTrouvés[0] >= 10000000) {
             return;
         }
 

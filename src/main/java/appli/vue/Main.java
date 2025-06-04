@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class Main extends Application {
-    public void start(Stage stage) {
+    public void start(Stage stage) throws Exception {
         VBoxRoot root = new VBoxRoot();
         Scene scene = new Scene(root, 1500, 850);
         stage.setScene(scene);

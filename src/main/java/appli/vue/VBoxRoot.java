@@ -1,6 +1,7 @@
 package appli.vue;
 
 import appli.controleur.Controleur;
+import appli.modele.GrapheOriente;
 import appli.modele.Membre;
 import appli.modele.Scenario;
 import javafx.collections.FXCollections;
@@ -20,7 +21,7 @@ public class VBoxRoot extends VBox {
     private static VBoxSolutions chVBoxSolutions;
 
 
-    public VBoxRoot() {
+    public VBoxRoot() throws Exception {
         super(30);
         chControleur = new Controleur();
         chMenuDeroulant = new MenuDeroulant();
@@ -33,7 +34,10 @@ public class VBoxRoot extends VBox {
 
         this.getChildren().addAll(chMenuDeroulant, labelTitle, chTableauPane,labelSolution, chVBoxSolutions);
 
-
+        Scenario scenario = new Scenario("s1");
+        GrapheOriente grapheduscen = new GrapheOriente(scenario);
+        VBoxRoot.getTableauPane().setTableauPane(grapheduscen);
+        VBoxRoot.getVBoxSolutions().setChLabel(grapheduscen.meilleurschemins());
     }
 
     public static Controleur getControleur() {

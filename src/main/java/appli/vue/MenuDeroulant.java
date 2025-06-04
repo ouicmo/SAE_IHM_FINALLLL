@@ -17,6 +17,7 @@ public class MenuDeroulant extends MenuBar {
         for (int i = 0; i <= 8; i++) {
             MenuItem scenario = new MenuItem("Scénario " + i);
             scenario.setUserData("s" + i);
+            scenario.setMnemonicParsing(true);
 
             scenario.setOnAction(VBoxRoot.getControleur());
 
