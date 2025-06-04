@@ -86,22 +86,24 @@ public class    GrapheOriente {
             chDegreEntrant.putIfAbsent(vA, 0);
 
             // Arcs sortants, premier arc sortant : VelizyV → vV (on part toujours de Velizy)
-            Set<String> s = chVoisinsSortant
-                    .computeIfAbsent("VelizyV", k -> new LinkedHashSet<>());
+            Set<String> s = chVoisinsSortant.computeIfAbsent("VelizyV", k -> new LinkedHashSet<>());
             if (s.add(vV)) {
                 chDegreEntrant.put(vV, chDegreEntrant.get(vV) + 1);
             }
 
 
-            chVoisinsSortant.computeIfAbsent(vV, k -> new LinkedHashSet<>()).add(vA);
-            chDegreEntrant.put(vA, chDegreEntrant.get(vA) + 1);
+            Set<String> ss = chVoisinsSortant.computeIfAbsent(vV, k -> new LinkedHashSet<>());
+            if (ss.add(vA)) {
+                chDegreEntrant.put(vA, chDegreEntrant.get(vA) + 1);
+            }
 
-            Set<String> voisinsDeA = chVoisinsSortant
-                    .computeIfAbsent(vA, k -> new LinkedHashSet<>());
-            if (voisinsDeA.add("VelizyA")) {
-                // on incrémente le degré entrant de VelizyA
+
+            Set<String> voisinsDeA = chVoisinsSortant.computeIfAbsent(vA, k -> new LinkedHashSet<>());
+            if (!voisinsDeA.contains("VelizyA")) {
+                voisinsDeA.add("VelizyA");
                 chDegreEntrant.put("VelizyA", chDegreEntrant.get("VelizyA") + 1);
             }
+
 
 
         }
@@ -407,7 +409,7 @@ public class    GrapheOriente {
             List<Integer>       bestDistances,
             int[]               compteTrouvés
     ) {
-        // Interruption immédiate si on a déjà trouvé 5 000 000 parcours complets
+        // Interruption immédiate si on a déjà trouvé k parcours complets
         if (compteTrouvés[0] >= 5000000) {
             return;
         }
@@ -438,9 +440,6 @@ public class    GrapheOriente {
         //    On clone les états pour ne pas "polluer" l’appelant.
         List<String> sourcesClone = new ArrayList<>(sourcesCourant);
         for (String u : sourcesClone) {
-            if (compteTrouvés[0] >= 5000000) {
-                return; // on sort si la limite est atteinte
-            }
 
             // A) Copier degEntCourant et sourcesCourant
             Map<String,Integer> degEntNext = new TreeMap<>(degEntCourant);
@@ -481,7 +480,7 @@ public class    GrapheOriente {
                     compteTrouvés
             );
 
-            // G) Backtracking : retirer 'u' du chemin courant
+            // G) retirer 'u' du chemin courant
             cheminCourant.remove(cheminCourant.size() - 1);
         }
     }
